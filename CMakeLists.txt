@@ -1,0 +1,23 @@
+project(tlsh_pg)
+cmake_minimum_required(VERSION 2.8)
+set(CMAKE_BUILD_TYPE Release)
+set(EXTRA_FLAGS "-Wall -fPIE")
+SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${EXTRA_FLAGS}")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${EXTRA_FLAGS}")
+
+execute_process(COMMAND pg_config --includedir-server RESULT_VARIABLE PG_INCLUDESRV_RESULT OUTPUT_VARIABLE PG_INCLUDESRV_DIR)
+execute_process(COMMAND pg_config --includedir RESULT_VARIABLE PG_INCLUDE_RESULT OUTPUT_VARIABLE PG_INCLUDE_DIR)
+
+if(${PG_INCLUDESRV_RESULT} EQUAL 0)
+    MESSAGE( STATUS "PG Server Include: ${PG_INCLUDESRV_DIR}" )
+    MESSAGE( STATUS "PG Include: ${PG_INCLUDE_DIR}" )
+
+    add_library(${PROJECT_NAME} SHARED src/pg_tlsh.c src/pg_tlsh_helper.cpp tlsh/src/tlsh.cpp tlsh/src/tlsh_impl.cpp tlsh/src/tlsh_util.cpp)
+    target_include_directories(${PROJECT_NAME} PRIVATE tlsh/include/ include/)
+    add_definitions(-DBUCKETS_128)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PG_INCLUDESRV_DIR})
+    set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
+    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "tlsh_psql")
+else()
+    message(FATAL_ERROR "Postgres libraries and headers not found")
+endif()
