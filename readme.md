@@ -4,11 +4,15 @@ This project adds an extension to the [Postgres](https://www.postgresql.org/) da
 #### Compiling:
 1. Install pre-requisites: CMake, Postgres server dev packages. On Ubuntu/Debian, this can be done by running `sudo apt-get install cmake postgresql-server-dev-12` where 12 indicates the version of Postgres you're using.
 2. `git clone --recursive https://github.com/malwaredb/tlsh_pg.git`
-3. `mkdir build`
-4. `cd build`
-5. `cmake ..`
-6. `make`
-7. Installation & testing:
+3. `cd tlsh_pg`
+4. Build TLSH, since it generates a needed header file.
+    1. `cd tlsh`
+    2. `./make.sh`
+5. `mkdir build`
+6. `cd build`
+7. `cmake .. -DCMAKE_BUILD_TYPE=Release`
+8. `make`
+9. Installation & testing:
    1. Copy the resulting library to the Postgres `lib` directory, which is shown by running `pg_config --pkglibdir`.
    2. As the Postgres user, run `psql DBNAME`, where you'll load the libary for the database schema you wish to use it with. This is done per-schema, as a privileged user.
    3. At the psql prompt, run `CREATE OR REPLACE FUNCTION tlsh_compare(TEXT, TEXT) RETURNS INTEGER AS 'tlsh_psql.so', 'pg_tlsh_compare' LANGUAGE 'c';`.
