@@ -13,7 +13,7 @@ if(${PG_INCLUDESRV_RESULT} EQUAL 0)
     MESSAGE( STATUS "PG Include: ${PG_INCLUDE_DIR}" )
 
     add_library(${PROJECT_NAME} SHARED src/pg_tlsh.c src/pg_tlsh_helper.cpp tlsh/src/tlsh.cpp tlsh/src/tlsh_impl.cpp tlsh/src/tlsh_util.cpp)
-    target_include_directories(${PROJECT_NAME} PRIVATE tlsh/include/ include/)
+    target_include_directories(${PROJECT_NAME} PRIVATE tlsh/include/)
     add_definitions(-DBUCKETS_128)
     target_include_directories(${PROJECT_NAME} PUBLIC ${PG_INCLUDESRV_DIR})
     set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
